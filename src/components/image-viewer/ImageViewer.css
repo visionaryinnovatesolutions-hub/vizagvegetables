@@ -1,0 +1,66 @@
+
+.iv-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iv-image {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+}
+
+/* Close */
+.iv-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  font-size: 28px;
+  color: #fff;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+/* Arrows */
+.iv-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 48px;
+  color: #fff;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 12px;
+}
+
+.iv-nav.left {
+  left: 24px;
+}
+
+.iv-nav.right {
+  right: 24px;
+}
+
+.iv-nav:hover,
+.iv-close:hover {
+  opacity: 0.8;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .iv-nav {
+    font-size: 36px;
+  }
+
+  .iv-close {
+    font-size: 24px;
+  }
+}
