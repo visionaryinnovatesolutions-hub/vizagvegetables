@@ -66,7 +66,7 @@ const REQUIRED_ORDER = {
 };
 
 const ITEMS_PER_PAGE = 36;
-const REFRESH_INTERVAL = 60000; // 60 sec
+// const REFRESH_INTERVAL = 60000; // 60 sec
 
 /* ================= HELPERS ================= */
 
