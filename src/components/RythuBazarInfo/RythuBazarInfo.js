@@ -117,6 +117,12 @@ const RythuBazarInfo = () => {
     
     <section className="rb-section" id="rythu">
       <div className="container-1440">
+
+
+        <div className="rbsection-header">
+          <h2>Rythubazar info </h2>
+        </div>
+
         {/* TABS */}
         <div className="rb-tabs">
           {bazarList.map(item => (

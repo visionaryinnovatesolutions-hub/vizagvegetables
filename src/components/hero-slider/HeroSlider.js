@@ -29,7 +29,7 @@ const HeroSlider = () => {
                 <div className="hero-content">
                   <h1>{slide.title}</h1>
                   <p>{slide.subtitle}</p>
-                  <button>{slide.buttonText}</button>
+                  {/* <button>{slide.buttonText}</button> */}
                 </div>
               </div>
             </div>

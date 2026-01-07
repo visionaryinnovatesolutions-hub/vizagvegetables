@@ -144,8 +144,8 @@ const DashboardList = () => {
   /* ===== INITIAL + AUTO REFRESH ===== */
   useEffect(() => {
     fetchCsvData();
-    const interval = setInterval(fetchCsvData, REFRESH_INTERVAL);
-    return () => clearInterval(interval);
+    // const interval = setInterval(fetchCsvData, REFRESH_INTERVAL);
+    // return () => clearInterval(interval);
   }, []);
 
   /* ===== FILTER ===== */
@@ -186,7 +186,7 @@ const DashboardList = () => {
           <h2>Today’s Vizag Rythu Bazar Prices</h2>
           {lastUpdated && (
             <div className="last-updated">
-              Last updated: {lastUpdated}
+              {/* Last updated: {lastUpdated} */}
             </div>
           )}
         </div>
@@ -262,7 +262,7 @@ const DashboardList = () => {
                     <div className="english">{item.nameEnglish}</div>
 
                     <div className="price-row">
-                      <span className="today">{item.todayPrice}</span>        
+                      <span className="today">₹ {item.todayPrice} <small>Kg</small></span>        
                     </div>
 
                   </div>
@@ -271,7 +271,8 @@ const DashboardList = () => {
 
                   
                   <div className="yesterday">
-                    <span>Yesterday</span> <span>{item.yesterdayPrice}</span>
+                    <span className="yesterday-left">Yesterday</span> 
+                    <span className="yesterday-right">₹ {item.yesterdayPrice} <small>Kg</small></span>
                   </div>
 
                 </div>

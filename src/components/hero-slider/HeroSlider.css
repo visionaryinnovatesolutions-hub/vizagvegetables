@@ -12,6 +12,7 @@
   position: relative;
 }
 
+
 .hero-slide::before {
   content: "";
   position: absolute;
@@ -28,6 +29,7 @@
   position: relative;
   max-width: 460px;
   text-align: center;
+  margin: 0 auto;
 }
 
 .hero-content h1 {
