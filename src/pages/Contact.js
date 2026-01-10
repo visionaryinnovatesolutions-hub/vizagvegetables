@@ -35,40 +35,22 @@ const Contact = () => {
           <div className="contact-box">
             <h3>Send Us a Message</h3>
 
-            <form
-              name="contact"
-              method="POST"
-              data-netlify="true"
-              netlify-honeypot="bot-field"
-            >
-              {/* REQUIRED FOR NETLIFY */}
-              <input type="hidden" name="form-name" value="contact" />
+         <form
+  name="contact"
+  method="POST"
+  data-netlify="true"
+  netlify-honeypot="bot-field"
+>
+  <input type="hidden" name="form-name" value="contact" />
+  <input type="hidden" name="bot-field" />
 
-              {/* HONEYPOT */}
-              <input type="hidden" name="bot-field" />
+  <input type="text" name="name" placeholder="Your Name" required />
+  <input type="email" name="email" placeholder="Your Email" required />
+  <textarea name="message" placeholder="Your Message" required></textarea>
 
-              <input
-                type="text"
-                name="name"
-                placeholder="Your Name"
-                required
-              />
+  <button type="submit">Send Message</button>
+</form>
 
-              <input
-                type="email"
-                name="email"
-                placeholder="Your Email"
-                required
-              />
-
-              <textarea
-                name="message"
-                placeholder="Your Message"
-                required
-              ></textarea>
-
-              <button type="submit">Send Message</button>
-            </form>
 
             <p className="contact-form-note">
               * We usually respond within 24 hours.
