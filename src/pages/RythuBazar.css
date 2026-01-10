@@ -1,0 +1,93 @@
+
+.rythu-page {
+  display: flex;
+  gap: 30px;
+  padding: 40px 0;
+}
+
+/* LEFT LIST */
+.rythu-left {
+  width: 30%;
+  border-right: 1px solid #e0e0e0;
+}
+
+.rythu-tab {
+  padding: 15px;
+  cursor: pointer;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  background: #f9fff9;
+}
+
+.rythu-tab h4 {
+  margin: 0;
+  font-size: 16px;
+  color: #2e7d32;
+}
+
+.rythu-tab p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: #555;
+}
+
+.rythu-tab:hover {
+  background: #e8f5e9;
+}
+
+/* ACTIVE TAB */
+.rythu-tab.active {
+  background: #2e7d32;
+}
+
+.rythu-tab.active h4,
+.rythu-tab.active p {
+  color: #fff;
+}
+
+/* RIGHT CONTENT */
+.rythu-right {
+  width: 70%;
+}
+
+.rythu-right h2 {
+  color: #2e7d32;
+  margin-bottom: 20px;
+}
+
+.info-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.info-card p {
+  margin: 10px 0;
+  font-size: 15px;
+}
+
+
+.rb-images {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.rb-images img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.rb-map iframe {
+  width: 100%;
+  height: 320px;
+  border-radius: 12px;
+  border: 0;
+  margin-top: 20px;
+}

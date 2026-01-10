@@ -29,7 +29,7 @@ const Footer = () => {
 
         <div>
           <h4>Contact</h4>
-          <p>vizag-vegetables@gmail.com</p>
+          <p>support@vizagvegetables.com</p>
         </div>
       </div>
 

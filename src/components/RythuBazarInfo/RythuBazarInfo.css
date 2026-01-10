@@ -96,8 +96,8 @@
 }
 
 .rb-images img.big {
-  grid-row: span 2;
-  height: 230px;
+  /* grid-row: span 2;
+  height: 230px; */
 }
 
 /* MAP */
@@ -115,7 +115,7 @@
   }
 
   .rb-images img.big {
-    height: 180px;
+    /* height: 180px; */
   }
 
   .rb-map iframe {

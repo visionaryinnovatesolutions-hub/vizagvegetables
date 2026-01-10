@@ -4,6 +4,20 @@
   border-bottom: 1px solid #eaeaea;
 }
 
+.header-right a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+}
+
+.header-right a.active {
+  color: #2e7d32;
+  border-bottom: 2px solid #2e7d32;
+  padding-bottom: 4px;
+}
+
+
 .header-inner {
   height: 64px;
   display: flex;
@@ -54,6 +68,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  text-decoration: none;
 }
 
 .header-left img {

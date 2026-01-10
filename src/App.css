@@ -16,3 +16,7 @@ body {
   padding-right: 24px;
   width: 84%;
 }
+
+.inner-page {
+  min-height: calc(100vh - 390px);
+}

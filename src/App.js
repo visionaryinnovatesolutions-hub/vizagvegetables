@@ -1,20 +1,28 @@
 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./components/header/Header";
+import Footer from "./components/footer/Footer";
 import './App.css';
-import Hero from './components/hero/Hero';
-import DashboardList from './components/dashboard-list/DashboardList';
-import Header from './components/header/Header';
-import RythuBazarInfo from './components/RythuBazarInfo/RythuBazarInfo';
-import Footer from './components/footer/Footer';
+
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import RythuBazar from "./pages/RythuBazar";
 
 function App() {
   return (
-    <div className="">
+    <Router>
       <Header />
-      <Hero />
-      <DashboardList />
-      <RythuBazarInfo />
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/rythu-bazar" element={<RythuBazar />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+      </Routes>
+
       <Footer />
-    </div>
+    </Router>
   );
 }
 
