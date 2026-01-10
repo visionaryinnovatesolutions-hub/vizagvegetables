@@ -1,7 +1,15 @@
 
 import React, { useEffect, useMemo, useState } from "react";
-import Papa from "papaparse";
+// import Papa from "papaparse";
 import "./DashboardList.css";
+import imageUrlBuilder from "@sanity/image-url";
+import sanityClient from "../../sanityClient";
+import noImage from "../../assets/img/no-image.png";
+
+
+const builder = imageUrlBuilder(sanityClient);
+const urlFor = (source) => builder.image(source);
+
 
 /* ================= TREND ICONS ================= */
 
@@ -99,28 +107,66 @@ const DashboardList = () => {
   });
 
   /* ===== CSV FETCH ===== */
-  const fetchCsvData = () => {
-    fetch(
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vS6oouTaZ4TnXZPfnUeyU5Wk5YJ56nmmenCuw0GMKt137-6nFfxUsIuysPx0onBlP7TM25W7dmz9CuP/pub?output=csv",
-      { cache: "no-store" }
-    )
-      .then((res) => res.text())
-      .then((csvText) => {
-        const parsed = Papa.parse(csvText, { skipEmptyLines: true });
-        const rows = parsed.data.slice(3);
+  // const fetchCsvData = () => {
+  //   fetch(
+  //     "https://docs.google.com/spreadsheets/d/e/2PACX-1vS6oouTaZ4TnXZPfnUeyU5Wk5YJ56nmmenCuw0GMKt137-6nFfxUsIuysPx0onBlP7TM25W7dmz9CuP/pub?output=csv",
+  //     { cache: "no-store" }
+  //   )
+  //     .then((res) => res.text())
+  //     .then((csvText) => {
+  //       const parsed = Papa.parse(csvText, { skipEmptyLines: true });
+  //       const rows = parsed.data.slice(3);
 
-        const formatted = rows.map((row) => ({
-          nameTelugu: row[1],
-          nameEnglish: row[2],
-          favorite: row[3]?.toUpperCase() === "YES",
-          required: row[4]?.toUpperCase(),
-          category: row[5]?.toLowerCase(),
-          todayPrice: row[6],
-          yesterdayPrice: row[7],
-          image: row[8]
-        }));
+  //       const formatted = rows.map((row) => ({
+  //         nameTelugu: row[1],
+  //         nameEnglish: row[2],
+  //         favorite: row[3]?.toUpperCase() === "YES",
+  //         required: row[4]?.toUpperCase(),
+  //         category: row[5]?.toLowerCase(),
+  //         todayPrice: row[6],
+  //         yesterdayPrice: row[7],
+  //         image: row[8]
+  //       }));
 
-        const visibleItems = formatted
+  //       const visibleItems = formatted
+  //         .filter((item) => item.required !== "HIDE")
+  //         .sort(
+  //           (a, b) =>
+  //             (REQUIRED_ORDER[a.required] || 99) -
+  //             (REQUIRED_ORDER[b.required] || 99)
+  //         );
+
+  //       setData(visibleItems);
+
+  //       // ✅ last updated time
+  //       setLastUpdated(
+  //         new Date().toLocaleTimeString("en-US", {
+  //           hour: "2-digit",
+  //           minute: "2-digit"
+  //         })
+  //       );
+  //     })
+  //     .catch((err) => console.error("CSV fetch failed", err));
+  // };
+
+    const fetchSanityData = async () => {
+      try {
+        const query = `
+          *[_type == "product"]{
+            nameTelugu,
+            nameEnglish,
+            favorite,
+            required,
+            category,
+            todayPrice,
+            yesterdayPrice,
+            image
+          }
+        `;
+
+        const result = await sanityClient.fetch(query);
+
+        const visibleItems = result
           .filter((item) => item.required !== "HIDE")
           .sort(
             (a, b) =>
@@ -130,23 +176,29 @@ const DashboardList = () => {
 
         setData(visibleItems);
 
-        // ✅ last updated time
         setLastUpdated(
           new Date().toLocaleTimeString("en-US", {
             hour: "2-digit",
-            minute: "2-digit"
+            minute: "2-digit",
           })
         );
-      })
-      .catch((err) => console.error("CSV fetch failed", err));
-  };
+      } catch (error) {
+        console.error("Sanity fetch failed:", error);
+      }
+    };
+
 
   /* ===== INITIAL + AUTO REFRESH ===== */
+  // useEffect(() => {
+  //   fetchCsvData();
+  //   // const interval = setInterval(fetchCsvData, REFRESH_INTERVAL);
+  //   // return () => clearInterval(interval);
+  // }, []);
+
   useEffect(() => {
-    fetchCsvData();
-    // const interval = setInterval(fetchCsvData, REFRESH_INTERVAL);
-    // return () => clearInterval(interval);
+    fetchSanityData();
   }, []);
+
 
   /* ===== FILTER ===== */
   const filteredData = useMemo(() => {
@@ -225,14 +277,39 @@ const DashboardList = () => {
             return (
               <div className="card" key={index}>
                 <div className="image-box">
-                  <img
+                  {/* <img
                     src={item.image}
                     alt={item.nameEnglish}
                     onError={(e) =>
                       (e.target.src =
                         "https://via.placeholder.com/150?text=No+Image")
                     }
-                  />
+                  /> */}
+
+
+           {/* <img
+              src={
+                item.image
+                  ? urlFor(item.image).width(300).auto("format").url()
+                  : noImage
+              }
+              alt={item.nameEnglish || "Product image"}
+            /> */}
+
+
+                <img
+                  src={
+                    item.image
+                      ? urlFor(item.image).width(300).auto("format").url()
+                      : noImage
+                  }
+                  alt={item.nameEnglish || "Product image"}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = noImage;
+                  }}
+                />
+
 
 
                   <div className="price-graph">
