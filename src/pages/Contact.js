@@ -42,17 +42,39 @@ const Contact = () => {
               data-netlify="true"
               netlify-honeypot="bot-field"
             >
+              {/* REQUIRED FOR NETLIFY */}
+              <input type="hidden" name="form-name" value="contact" />
+              <input type="hidden" name="bot-field" />
 
-            <input type="hidden" name="form-name" value="contact" />
-            <input type="hidden" name="bot-field" />
+              {/* ✅ CUSTOM EMAIL SUBJECT */}
+              <input
+                type="hidden"
+                name="subject"
+                value="New Contact Message – Vizag Vegetables"
+              />
 
-            <input type="text" name="name" placeholder="Your Name" required />
-            <input type="email" name="email" placeholder="Your Email" required />
-            <textarea name="message" placeholder="Your Message" required></textarea>
+              <input
+                type="text"
+                name="name"
+                placeholder="Your Name"
+                required
+              />
 
-            <button type="submit">Send Message</button>
-          </form>
+              <input
+                type="email"
+                name="email"
+                placeholder="Your Email"
+                required
+              />
 
+              <textarea
+                name="message"
+                placeholder="Your Message"
+                required
+              ></textarea>
+
+              <button type="submit">Send Message</button>
+            </form>
 
             <p className="contact-form-note">
               * We usually respond within 24 hours.
