@@ -1,85 +1,55 @@
 
 import React, { useEffect, useMemo, useState } from "react";
-// import Papa from "papaparse";
 import "./DashboardList.css";
 import imageUrlBuilder from "@sanity/image-url";
 import sanityClient from "../../sanityClient";
 import noImage from "../../assets/img/no-image.png";
 
-
 const builder = imageUrlBuilder(sanityClient);
 const urlFor = (source) => builder.image(source);
-
 
 /* ================= TREND ICONS ================= */
 
 const TrendUpIcon = () => (
   <svg viewBox="0 0 24 24" className="trend-icon">
-    <path
-      d="M4 16L10 10L14 14L20 8"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M14 8H20V14"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M4 16L10 10L14 14L20 8" fill="none" stroke="currentColor" strokeWidth="2" />
+    <path d="M14 8H20V14" fill="none" stroke="currentColor" strokeWidth="2" />
   </svg>
 );
 
 const TrendDownIcon = () => (
   <svg viewBox="0 0 24 24" className="trend-icon">
-    <path
-      d="M4 8L10 14L14 10L20 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M14 16H20V10"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M4 8L10 14L14 10L20 16" fill="none" stroke="currentColor" strokeWidth="2" />
+    <path d="M14 16H20V10" fill="none" stroke="currentColor" strokeWidth="2" />
   </svg>
 );
 
 /* ================= CONFIG ================= */
 
+
 const categories = [
   { key: "all", label: "All" },
   { key: "favorite", label: "Fav" },
   { key: "vegetables", label: "Vegetables" },
-  { key: "leafy green", label: "Leafy Green" },
+  { key: "Leafy Green", label: "Leafy Green" }, 
   { key: "fruits", label: "Fruits" },
   { key: "flowers", label: "Flowers" }
 ];
 
-const REQUIRED_ORDER = {
+const PRIORITY_ORDER = {
   TOP1: 1,
   TOP2: 2,
   TOP3: 3,
-  BOTTOM: 4
+  NORMAL: 4,
+  BOTTOM: 5
 };
 
-const ITEMS_PER_PAGE = 36;
-// const REFRESH_INTERVAL = 60000; // 60 sec
+const ITEMS_PER_PAGE = 30;
 
 /* ================= HELPERS ================= */
 
 const getNumber = (price) => {
-  if (!price) return null;
+  if (price == null) return null;
   const num = price.toString().match(/\d+(\.\d+)?/);
   return num ? Number(num[0]) : null;
 };
@@ -106,106 +76,61 @@ const DashboardList = () => {
     day: "2-digit"
   });
 
-  /* ===== CSV FETCH ===== */
-  // const fetchCsvData = () => {
-  //   fetch(
-  //     "https://docs.google.com/spreadsheets/d/e/2PACX-1vS6oouTaZ4TnXZPfnUeyU5Wk5YJ56nmmenCuw0GMKt137-6nFfxUsIuysPx0onBlP7TM25W7dmz9CuP/pub?output=csv",
-  //     { cache: "no-store" }
-  //   )
-  //     .then((res) => res.text())
-  //     .then((csvText) => {
-  //       const parsed = Papa.parse(csvText, { skipEmptyLines: true });
-  //       const rows = parsed.data.slice(3);
+  /* ================= SANITY FETCH ================= */
 
-  //       const formatted = rows.map((row) => ({
-  //         nameTelugu: row[1],
-  //         nameEnglish: row[2],
-  //         favorite: row[3]?.toUpperCase() === "YES",
-  //         required: row[4]?.toUpperCase(),
-  //         category: row[5]?.toLowerCase(),
-  //         todayPrice: row[6],
-  //         yesterdayPrice: row[7],
-  //         image: row[8]
-  //       }));
+  const fetchSanityData = async () => {
+    try {
+      const query = `
+        *[_type == "product"]{
+          nameTelugu,
+          nameEnglish,
+          weight,
+          isFavorite,
+          priority,
+          order,
+          category,
+          todayPrice,
+          yesterdayPrice,
+          image
+        }
+      `;
 
-  //       const visibleItems = formatted
-  //         .filter((item) => item.required !== "HIDE")
-  //         .sort(
-  //           (a, b) =>
-  //             (REQUIRED_ORDER[a.required] || 99) -
-  //             (REQUIRED_ORDER[b.required] || 99)
-  //         );
+      const result = await sanityClient.fetch(query);
 
-  //       setData(visibleItems);
+      const sorted = result.sort((a, b) => {
+        const pDiff =
+          (PRIORITY_ORDER[a.priority] || 99) -
+          (PRIORITY_ORDER[b.priority] || 99);
 
-  //       // ✅ last updated time
-  //       setLastUpdated(
-  //         new Date().toLocaleTimeString("en-US", {
-  //           hour: "2-digit",
-  //           minute: "2-digit"
-  //         })
-  //       );
-  //     })
-  //     .catch((err) => console.error("CSV fetch failed", err));
-  // };
+        if (pDiff !== 0) return pDiff;
 
-    const fetchSanityData = async () => {
-      try {
-        const query = `
-          *[_type == "product"]{
-            nameTelugu,
-            nameEnglish,
-            favorite,
-            required,
-            category,
-            todayPrice,
-            yesterdayPrice,
-            image
-          }
-        `;
+        return (a.order || 999) - (b.order || 999);
+      });
 
-        const result = await sanityClient.fetch(query);
+      setData(sorted);
 
-        const visibleItems = result
-          .filter((item) => item.required !== "HIDE")
-          .sort(
-            (a, b) =>
-              (REQUIRED_ORDER[a.required] || 99) -
-              (REQUIRED_ORDER[b.required] || 99)
-          );
-
-        setData(visibleItems);
-
-        setLastUpdated(
-          new Date().toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-        );
-      } catch (error) {
-        console.error("Sanity fetch failed:", error);
-      }
-    };
-
-
-  /* ===== INITIAL + AUTO REFRESH ===== */
-  // useEffect(() => {
-  //   fetchCsvData();
-  //   // const interval = setInterval(fetchCsvData, REFRESH_INTERVAL);
-  //   // return () => clearInterval(interval);
-  // }, []);
+      setLastUpdated(
+        new Date().toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit"
+        })
+      );
+    } catch (err) {
+      console.error("Sanity fetch failed:", err);
+    }
+  };
 
   useEffect(() => {
     fetchSanityData();
   }, []);
 
+  /* ================= FILTER ================= */
 
-  /* ===== FILTER ===== */
   const filteredData = useMemo(() => {
     let list = [...data];
 
     if (selectedCategory === "favorite") {
-      list = list.filter((item) => item.favorite);
+      list = list.filter((item) => item.isFavorite);
     } else if (selectedCategory !== "all") {
       list = list.filter((item) => item.category === selectedCategory);
     }
@@ -230,17 +155,14 @@ const DashboardList = () => {
 
   useEffect(() => setPage(1), [selectedCategory, searchText]);
 
+  /* ================= RENDER ================= */
+
   return (
     <section className="price-section">
       <div className="container-1440">
         <div className="price-header">
           <div className="date">📅 {todayDate}</div>
           <h2>Today’s Vizag Rythu Bazar Prices</h2>
-          {lastUpdated && (
-            <div className="last-updated">
-              {/* Last updated: {lastUpdated} */}
-            </div>
-          )}
         </div>
 
         <div className="filter-row">
@@ -277,81 +199,45 @@ const DashboardList = () => {
             return (
               <div className="card" key={index}>
                 <div className="image-box">
-                  {/* <img
-                    src={item.image}
-                    alt={item.nameEnglish}
-                    onError={(e) =>
-                      (e.target.src =
-                        "https://via.placeholder.com/150?text=No+Image")
+                  <img
+                    src={
+                      item.image
+                        ? urlFor(item.image).width(300).auto("format").url()
+                        : noImage
                     }
-                  /> */}
+                    alt={item.nameEnglish || "Product"}
+                    onError={(e) => (e.target.src = noImage)}
+                  />
 
-
-           {/* <img
-              src={
-                item.image
-                  ? urlFor(item.image).width(300).auto("format").url()
-                  : noImage
-              }
-              alt={item.nameEnglish || "Product image"}
-            /> */}
-
-
-                <img
-                  src={
-                    item.image
-                      ? urlFor(item.image).width(300).auto("format").url()
-                      : noImage
-                  }
-                  alt={item.nameEnglish || "Product image"}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = noImage;
-                  }}
-                />
-
-
-
-                  <div className="price-graph">
-                      {status && status.type !== "same" && (
-                        <span className={`price-change ${status.type}`}>
-                          {status.type === "up" ? (
-                            <TrendUpIcon />
-                          ) : (
-                            <TrendDownIcon />
-                          )}
-                          ₹{status.diff}
-                        </span>
-                      )}
-
-                      {status && status.type === "same" && (
-                        <span className="price-change same"></span>
-                      )}
-                  </div>
+                  {status && status.type !== "same" && (
+                    <span className={`price-change ${status.type}`}>
+                      {status.type === "up" ? <TrendUpIcon /> : <TrendDownIcon />}
+                      ₹{status.diff}
+                    </span>
+                  )}
                 </div>
 
                 <div className="card-body">
                   <div className="telugu">{item.nameTelugu}</div>
 
-
                   <div className="card-body-topsec">
-
                     <div className="english">{item.nameEnglish}</div>
 
                     <div className="price-row">
-                      <span className="today">₹ {item.todayPrice} <small>Kg</small></span>        
+                      <span className="today">
+                        ₹ {item.todayPrice}
+                        {item.weight && <small> / {item.weight}</small>}
+                      </span>
                     </div>
-
                   </div>
 
-    
-
-                  
                   <div className="yesterday">
-                    <span className="yesterday-left">Yesterday</span> 
-                    <span className="yesterday-right">₹ {item.yesterdayPrice} <small>Kg</small></span>
+                    <span className="yesterday-left">Yesterday</span>
+                    <span className="yesterday-right">
+                      ₹ {item.yesterdayPrice}
+                      {item.weight && <small> / {item.weight}</small>}
+                    </span>
                   </div>
-
                 </div>
               </div>
             );
