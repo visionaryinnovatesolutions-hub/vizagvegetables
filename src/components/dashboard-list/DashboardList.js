@@ -75,7 +75,7 @@ const DashboardList = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchText, setSearchText] = useState("");
   const [page, setPage] = useState(1);
-  const [lastUpdated, setLastUpdated] = useState(null);
+  // const [lastUpdated, setLastUpdated] = useState(null);
 
   const todayDate = new Date().toLocaleDateString("en-US", {
     weekday: "long",
@@ -116,12 +116,12 @@ const DashboardList = () => {
 
       setData(sorted);
 
-      setLastUpdated(
-        new Date().toLocaleTimeString("en-US", {
-          hour: "2-digit",
-          minute: "2-digit"
-        })
-      );
+      // setLastUpdated(
+      //   new Date().toLocaleTimeString("en-US", {
+      //     hour: "2-digit",
+      //     minute: "2-digit"
+      //   })
+      // );
     } catch (err) {
       console.error("Sanity fetch failed:", err);
     }
