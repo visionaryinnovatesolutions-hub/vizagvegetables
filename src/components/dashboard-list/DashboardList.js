@@ -40,9 +40,16 @@ const PRIORITY_ORDER = {
   TOP1: 1,
   TOP2: 2,
   TOP3: 3,
-  NORMAL: 4,
-  BOTTOM: 5
+  TOP4: 4,
+  TOP5: 5,
+  TOP6: 6,
+  TOP7: 7,
+  TOP8: 8,
+  TOP9: 9,
+  TOP10: 10,
+  BOTTOM: 99
 };
+
 
 const ITEMS_PER_PAGE = 30;
 
@@ -130,7 +137,8 @@ const DashboardList = () => {
     let list = [...data];
 
     if (selectedCategory === "favorite") {
-      list = list.filter((item) => item.isFavorite);
+      // list = list.filter((item) => item.isFavorite);
+  list = list.filter(item => item.isFavorite === true);
     } else if (selectedCategory !== "all") {
       list = list.filter((item) => item.category === selectedCategory);
     }
